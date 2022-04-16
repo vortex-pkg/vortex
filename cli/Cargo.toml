@@ -1,0 +1,28 @@
+[package]
+authors = ["Skyfall <mahadkalam1234+vortex@gmail.com>"]
+categories = ["command-line-utilities"]
+description = "A faster package manager for Node.js"
+edition = "2021"
+keywords = ["js", "nodejs", "package-manager"]
+license = "MIT OR Apache-2.0"
+name = "vortex"
+readme = "README.md"
+repository = "https://github.com/SkyfallWasTaken/vortex"
+version = "0.1.0"
+
+[dependencies]
+clap = {version = "3.1.8", features = ["cargo"]}
+colored = "2.0.0"
+display_error = {path = "../display_error"}
+exitcode = "1.1.2"
+inquire = "0.2.1"
+json = "0.12.4"
+lazy_static = "1.4.0"
+panic_hook = {path = "../panic_hook"}
+run_script = "0.9.0"
+semver = "1.0.7"
+serde = {version = "1.0.136", features = ["derive"]}
+serde_json = "1.0.79"
+spdx = "0.8.1"
+validate_package_name = {path = "../validate_package_name"}
+run_in_shell = {path = "../run_in_shell"}
