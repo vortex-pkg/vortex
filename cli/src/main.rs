@@ -27,7 +27,7 @@ fn main() -> Result<(), ()> {
 
     match matches.subcommand() {
         Some(("init", matches)) => cmd_init::init(matches),
-        Some(("run", matches)) => cmd_run::run(matches),
+        Some(("run-script", matches)) => cmd_run::run(matches),
         _ => unreachable!(
             "Command is not defined in the command list, but subcommand_required is enabled"
         ),
