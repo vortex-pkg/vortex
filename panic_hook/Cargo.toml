@@ -1,0 +1,21 @@
+[package]
+authors = ["Skyfall <mahadkalam1234+nitro@gmail.com>"]
+categories = ["command-line-utilities"]
+description = "A faster package manager for Node.js"
+edition = "2021"
+keywords = ["js", "nodejs", "package-manager"]
+license = "MIT OR Apache-2.0"
+name = "panic_hook"
+readme = "README.md"
+repository = "https://github.com/SkyfallWasTaken/nitro"
+version = "0.1.0"
+
+[dependencies]
+backtrace = "0.3.64"
+colored = "2.0.0"
+home = "0.5.3"
+os_info = "3.2.0"
+serde = "1.0.136"
+serde_derive = "1.0.136"
+toml = "0.5.8"
+uuid = {version = "0.8.2", features = ["v4"], default-features = false}
