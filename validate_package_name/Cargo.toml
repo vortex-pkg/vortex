@@ -1,0 +1,19 @@
+[package]
+name = "validate_package_name"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lazy_static = "1.4.0"
+regex = "1.5.5"
+urlencoding = "2.1.0"
+
+[dev-dependencies.criterion]
+version = "0.3"
+features = ["html_reports"]
+
+[[bench]]
+name = "validate_package_name"
+harness = false
