@@ -60,12 +60,6 @@ lazy_static! {
 ///
 /// This also assumes that all experimental modules
 /// are enabled.
-/// 
-/// One thing to mention is that it **does not** check for strings
-/// over 214 characters, as (a) the user is sleeping on the keyboard, who will later
-/// change the name or run `vortex init` and the name is probably invalid anyway,
-/// or (b) they're intentionally trying to make a long name, but they'll likely
-/// stop before 214 characters. This saves some nanoseconds.
 pub fn validate(name: &str) -> Result<(), &str> {
     if name.len() == 0 {
         return Err("Package name must not be zero-length");
@@ -114,6 +108,10 @@ pub fn validate(name: &str) -> Result<(), &str> {
             (Ok(()), Ok(())) => return Ok(()),
             _ => return Err("Package name must be URL-friendly"),
         };
+    }
+
+    if name.len() > 214 {
+        return Err("Package name cannot be longer than 214 characters")
     }
 
     Ok(())
