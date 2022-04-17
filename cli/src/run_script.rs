@@ -43,10 +43,14 @@ pub fn run_script(name: Option<&str>) {
     if !status.success() {
         match status.code() {
             Some(code) => {
-                eprintln!("{} process didn't exit successfully: (exit code: {})", "error:".red().bold(), code);
+                eprintln!(
+                    "{} process didn't exit successfully: (exit code: {})",
+                    "error:".red().bold(),
+                    code
+                );
                 std::process::exit(code);
-            },
-            None => eprintln!("{} Process terminated by signal", "error:".red().bold())
+            }
+            None => eprintln!("{} Process terminated by signal", "error:".red().bold()),
         }
     }
 }
