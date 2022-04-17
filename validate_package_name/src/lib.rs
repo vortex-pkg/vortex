@@ -61,7 +61,7 @@ lazy_static! {
 /// This also assumes that all experimental modules
 /// are enabled.
 pub fn validate(name: &str) -> Result<(), &str> {
-    if name.len() == 0 {
+    if name.is_empty() {
         return Err("Package name must not be zero-length");
     }
 
@@ -75,11 +75,11 @@ pub fn validate(name: &str) -> Result<(), &str> {
         }
     }
 
-    if name.contains(" ") {
+    if name.contains(' ') {
         return Err("Package name cannot contain spaces");
     }
 
-    if name.starts_with("_") || name.starts_with(".") {
+    if name.starts_with('_') || name.starts_with('.') {
         return Err("Package name cannot start with a period/underscore")
     }
 
@@ -88,7 +88,7 @@ pub fn validate(name: &str) -> Result<(), &str> {
     }
 
     if encode(name) != name {
-        let matches: Vec<&str> = name.split("/").collect();
+        let matches: Vec<&str> = name.split('/').collect();
 
         if matches.len() != 2 {
             return Err("Package name must be URL-friendly");
@@ -97,7 +97,7 @@ pub fn validate(name: &str) -> Result<(), &str> {
         let user = matches[0];
         let package = matches[1];
 
-        if !user.starts_with("@") {
+        if !user.starts_with('@') {
             return Err("Package name must be URL-friendly");
         }
 
