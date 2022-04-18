@@ -3,33 +3,13 @@ use json::JsonValue;
 use std::fs;
 use std::path::Path;
 
-fn invalid_data(err: &str) {
+pub fn invalid_data(err: &str) {
     println!("{} {}", "error:".red().bold(), err);
     std::process::exit(exitcode::DATAERR);
 }
 
 /// Runs a package.json script
-pub fn run_script(name: Option<&str>) {
-    let scripts = get_scripts();
-    if scripts.is_null() {
-        invalid_data("scripts object does not exist in package.json");
-    }
-
-    let name = match name {
-        Some(name) => name,
-        None => {
-            eprintln!("All scripts:");
-            for (key, value) in scripts.entries() {
-                if value.is_string() {
-                    eprintln!("{}\n    {}", key.cyan().bold(), value.as_str().unwrap());
-                } else {
-                    eprintln!("{}\n    Invalid script (type != string)", key.red().bold());
-                }
-            }
-            std::process::exit(exitcode::USAGE);
-        }
-    };
-
+pub fn run_script(name: &str, scripts: JsonValue, shell: &str) {
     let script = &scripts[name];
     if script.is_null() {
         invalid_data(format!("script `{}` does not exist", name).as_str());
@@ -39,7 +19,7 @@ pub fn run_script(name: Option<&str>) {
         invalid_data(format!("script `{}` exists but it is not a string", name).as_str())
     }
 
-    let status = run_in_shell::run(script.to_string().as_str());
+    let status = run_in_shell::run(script.to_string().as_str(), shell);
     if !status.success() {
         match status.code() {
             Some(code) => {
@@ -48,6 +28,12 @@ pub fn run_script(name: Option<&str>) {
                     "error:".red().bold(),
                     code
                 );
+                if !Path::new("node_modules").is_dir() {
+                    eprintln!(
+                        "{} you might need to run `vortex install` and try again",
+                        "help:".cyan().bold()
+                    )
+                }
                 std::process::exit(code);
             }
             None => eprintln!("{} Process terminated by signal", "error:".red().bold()),
