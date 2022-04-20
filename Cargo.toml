@@ -1,5 +1,12 @@
 [workspace]
-members = ["cli", "panic_hook", "display_error", "validate_package_name", "run_in_shell"]
+members = [
+  "cli",
+  "panic_hook",
+  "display_error",
+  "validate_package_name",
+  "run_in_shell",
+  "install_npm",
+]
 
 [profile.release]
 lto = true
