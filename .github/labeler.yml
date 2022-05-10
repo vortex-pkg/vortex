@@ -1,0 +1,24 @@
+source:
+- src/**/*
+tests:
+- any: ["tests/*", "src/*/tests"]
+cli:
+- cli/*
+panic_hook:
+- panic_hook/*
+run_in_shell:
+- run_in_shell/*
+validate_package_name:
+- validate_package_name/*
+display-error:
+- display_error/*
+docs:
+- *.md
+bors-config:
+- bors.toml
+gitignore:
+- .gitignore
+gh:
+- .github/*
+package-or-workspace:
+- */Cargo.toml
