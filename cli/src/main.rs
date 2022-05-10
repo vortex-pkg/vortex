@@ -1,9 +1,11 @@
-use clap::{command, Arg, Command};
-use panic_hook::hook as panic_hook;
+use clap::{crate_version, Arg, Command};
+use owo_colors::colored::*;
 
-mod init;
-mod run;
-mod test;
+mod panic_hook;
+pub mod run_script;
+
+mod subcommands;
+use crate::subcommands::{init::init, run::run};
 
 const SHELL: &str = if cfg!(target_os = "windows") {
     "cmd"
@@ -11,9 +13,27 @@ const SHELL: &str = if cfg!(target_os = "windows") {
     "sh"
 };
 
-fn main() -> Result<(), ()> {
-    panic_hook();
-    let matches = command!()
+#[tokio::main]
+async fn main() -> Result<(), ()> {
+    if cfg!(debug_assertions) {
+        match color_eyre::install() {
+            Err(_) => {
+                eprintln!(
+                    "{} failed to install {} panic hook, using release {}",
+                    "warn:".yellow().bold(),
+                    "color-eyre".italic(),
+                    "panic_hook".italic()
+                );
+                panic_hook::hook();
+            }
+            _ => {}
+        }
+    } else {
+        panic_hook::hook();
+    }
+
+    let matches = Command::new("vortex")
+        .version(crate_version!())
         .propagate_version(true)
         .subcommand_required(true)
         .arg_required_else_help(true)
@@ -40,9 +60,9 @@ fn main() -> Result<(), ()> {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("init", matches)) => init::init(matches),
-        Some(("run-script", matches)) => run::run(matches),
-        Some(("test", matches)) => test::test(matches),
+        Some(("init", matches)) => init(matches),
+        Some(("run-script", matches)) => run(matches),
+        Some(("test", matches)) => run_script::alias("test", matches),
         _ => unreachable!(
             "Command is not defined in the command list, but subcommand_required is enabled"
         ),

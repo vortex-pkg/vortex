@@ -1,25 +1,31 @@
-use colored::*;
-use json::JsonValue;
-use std::fs;
+use clap::ArgMatches;
+use owo_colors::colored::*;
+use serde::{Deserialize, Serialize};
 use std::path::Path;
+use std::{collections::HashMap, fs};
 
 pub fn invalid_data(err: &str) {
-    println!("{} {}", "error:".red().bold(), err);
+    eprintln!("{} {}", "error:".red().bold(), err);
     std::process::exit(exitcode::DATAERR);
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct Contents {
+    scripts: Option<HashMap<String, String>>,
+}
+
 /// Runs a package.json script
-pub fn run_script(name: &str, scripts: JsonValue, shell: &str) {
-    let script = &scripts[name];
-    if script.is_null() {
-        invalid_data(format!("script `{}` does not exist", name).as_str());
-    }
+pub fn run_script(name: &str, scripts: HashMap<String, String>, shell: &str) {
+    let script_option = &scripts.get(name);
+    let script = match script_option {
+        Some(s) => s,
+        None => {
+            invalid_data(format!("script `{}` does not exist", name).as_str());
+            unreachable!();
+        }
+    };
 
-    if !script.is_string() {
-        invalid_data(format!("script `{}` exists but it is not a string", name).as_str())
-    }
-
-    let status = run_in_shell::run(script.to_string().as_str(), shell);
+    let status = run_in_shell::run(&script, shell);
     if !status.success() {
         match status.code() {
             Some(code) => {
@@ -41,7 +47,7 @@ pub fn run_script(name: &str, scripts: JsonValue, shell: &str) {
     }
 }
 
-pub fn get_scripts() -> JsonValue {
+pub fn get_scripts() -> Option<HashMap<String, String>> {
     let path = Path::new("package.json");
     if !path.exists() {
         eprintln!(
@@ -51,7 +57,19 @@ pub fn get_scripts() -> JsonValue {
         std::process::exit(exitcode::NOINPUT);
     }
 
-    let parsed = match json::parse(fs::read_to_string("package.json").unwrap().as_str()) {
+    let contents = match fs::read_to_string("package.json") {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!(
+                "{} failed to read package.json: {}",
+                "error:".red().bold(),
+                e.to_string()
+            );
+            std::process::exit(exitcode::IOERR)
+        }
+    };
+
+    let parsed: Contents = match serde_json::from_str(contents.as_str()) {
         Ok(json) => json,
         _ => {
             invalid_data("package.json is invalid");
@@ -59,5 +77,18 @@ pub fn get_scripts() -> JsonValue {
         }
     };
 
-    parsed["scripts"].clone()
+    parsed.scripts
+}
+
+#[allow(dead_code)]
+pub fn alias(name: &str, matches: &ArgMatches) {
+    let scripts = match get_scripts() {
+        Some(scripts) => scripts,
+        None => {
+            invalid_data("scripts object does not exist in package.json");
+            unreachable!()
+        }
+    };
+
+    run_script(name, scripts, matches.value_of("shell").unwrap());
 }

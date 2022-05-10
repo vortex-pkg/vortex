@@ -4,7 +4,7 @@
 //! to construct a helpful error message.
 
 use backtrace::Backtrace;
-use serde_derive::Serialize;
+use serde::Serialize;
 use std::error::Error;
 use std::fmt::Write as FmtWrite;
 use std::mem;
@@ -129,7 +129,11 @@ impl Report {
 
     /// Write a file to disk.
     pub fn persist(&self) -> Result<PathBuf, Box<dyn Error + 'static>> {
-        let uuid = Uuid::new_v4().to_hyphenated().to_string();
+        let mut uuid_buffer = Uuid::encode_buffer();
+        let uuid = Uuid::new_v4()
+            .as_hyphenated()
+            .encode_lower(&mut uuid_buffer);
+            
         let home_dir = home::home_dir().unwrap();
         create_dir_all(home_dir.as_path().join(".vortex").join("crash_reports"))?;
         let file_name = format!("report-{}.toml", &uuid);

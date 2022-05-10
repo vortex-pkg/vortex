@@ -11,18 +11,24 @@ repository = "https://github.com/SkyfallWasTaken/vortex"
 version = "0.1.0"
 
 [dependencies]
+backtrace = "0.3.65"
 clap = {version = "3.1.8", features = ["cargo"]}
-colored = "2.0.0"
-display_error = {path = "../display_error"}
+color-eyre = "0.6.1"
+common_macros = "0.1.1"
 exitcode = "1.1.2"
+home = "0.5.3"
 inquire = "0.2.1"
 json = "0.12.4"
 lazy_static = "1.4.0"
-panic_hook = {path = "../panic_hook"}
-run_script = "0.9.0"
 node-semver = "2.0.0"
-serde = {version = "1.0.136", features = ["derive"]}
-serde_json = "1.0.79"
-spdx = "0.8.1"
-validate_package_name = {path = "../validate_package_name"}
+os_info = "3.3.0"
+owo-colors = "3"
 run_in_shell = {path = "../run_in_shell"}
+run_script = "0.9.0"
+serde = { version = "1.0.137", features = ["derive"] }
+serde_json = "1.0.81"
+spdx = "0.8.1"
+tokio = { version = "1.18.2", features = ["full"] }
+toml = "0.5.9"
+uuid = {version = "1.0.0", features = ["v4", "fast-rng"]}
+validate_package_name = {path = "../validate_package_name"}
