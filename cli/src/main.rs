@@ -16,17 +16,13 @@ const SHELL: &str = if cfg!(target_os = "windows") {
 #[tokio::main]
 async fn main() -> Result<(), ()> {
     if cfg!(debug_assertions) {
-        match color_eyre::install() {
-            Err(_) => {
-                eprintln!(
-                    "{} failed to install {} panic hook, using release {}",
-                    "warn:".yellow().bold(),
-                    "color-eyre".italic(),
-                    "panic_hook".italic()
-                );
-                panic_hook::hook();
-            }
-            _ => {}
+        if color_eyre::install().is_err() {
+            eprintln!(
+                "{} failed to install {} panic hook, using release {}",
+                "warn:".yellow().bold(),
+                "color-eyre".italic(),
+                "panic_hook".italic()
+            )
         }
     } else {
         panic_hook::hook();

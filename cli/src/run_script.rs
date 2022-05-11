@@ -63,7 +63,7 @@ pub fn get_scripts() -> Option<HashMap<String, String>> {
             eprintln!(
                 "{} failed to read package.json: {}",
                 "error:".red().bold(),
-                e.to_string()
+                e
             );
             std::process::exit(exitcode::IOERR)
         }
