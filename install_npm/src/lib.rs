@@ -96,7 +96,7 @@ mod tests {
     fn valid_lodash() {
         let metadata = aw!(get_metadata(
             "lodash",
-            Range::parse("1.2.x").unwrap(),
+            Range::parse("1.2.1").unwrap(),
             REGISTRY
         ));
         assert_eq!(
