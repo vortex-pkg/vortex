@@ -25,7 +25,7 @@ pub fn run_script(name: &str, scripts: HashMap<String, String>, shell: &str) {
         }
     };
 
-    let status = run_in_shell::run(&script, shell);
+    let status = run_in_shell::run(script, shell);
     if !status.success() {
         match status.code() {
             Some(code) => {
