@@ -27,7 +27,7 @@ struct RawMetadata {
 pub struct Metadata {
     name: String,
     version: String,
-    dependencies: Option<HashMap<String, Range>>,
+    dependencies: Option<HashMap<String, String>>,
     dist: Dist,
 }
 
@@ -81,7 +81,7 @@ mod tests {
         ($e:expr) => {
             match $e {
                 Ok(r) => r,
-                _ => panic!("error! error!")
+                _ => panic!("error! error!"),
             }
         };
     }
