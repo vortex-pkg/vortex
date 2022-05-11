@@ -1,4 +1,4 @@
-use colored::Colorize;
+use owo_colors::colored::*;
 use std::{
     panic::{self, PanicInfo},
     path::PathBuf,
@@ -19,7 +19,7 @@ Please report this issue at {}, and attach the crash report.
 It's located at {}.
 
 {}",
-                    "Well, this is awkward.".red().bold(),
+                    "Well, this is awkward.".red(),
                     format!("{}/issues", env!("CARGO_PKG_REPOSITORY")).cyan().underline().bold(),
                     match handle_dump(env!("CARGO_PKG_VERSION"), panic_info).as_ref() {
                         Some(path) => format!("{}", path.display().to_string().cyan().underline().bold()),
