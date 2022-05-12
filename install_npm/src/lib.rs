@@ -137,6 +137,8 @@ mod tests {
                 version: s!("1.2.1"),
                 dependencies: None,
                 dist: Dist {
+                    // Tell DevSkim that a SHA-1 hash, funnily enough, is not a token
+                    // DevSkim: ignore DS173237
                     shasum: s!("ed47b16e46f06b2b40309b68e9163c17e93ea304"),
                     tarball: s!("https://registry.npmjs.org/lodash/-/lodash-1.2.1.tgz")
                 }
