@@ -81,8 +81,8 @@ pub async fn walk_dependencies(
     let deps = metadata.dependencies.clone();
     result.push(metadata);
 
-    if deps.is_some() {
-        for (key, value) in deps.unwrap() {
+    if let Some(deps) = deps {
+        for (key, value) in deps {
             let range = match Range::parse(value) {
                 Ok(r) => r,
                 Err(_) => return Err(Error::InvalidRange),
