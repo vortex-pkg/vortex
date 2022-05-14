@@ -3,11 +3,10 @@ pub fn unroll_version(version: &str) -> String {
         // Major
         Ok(n) => return format!("{}.0.0", n),
         _ => {
-
             // Only major + minor
             match version.parse::<f32>() {
                 Ok(n) => return format!("{}.0", n),
-                _ => return String::from(version)
+                _ => String::from(version)
             }
         }
     }
