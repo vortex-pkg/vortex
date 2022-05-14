@@ -20,5 +20,3 @@ gitignore:
 - .gitignore
 gh:
 - .github/*
-package-or-workspace:
-- */Cargo.toml
