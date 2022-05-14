@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use async_recursion::async_recursion;
 use lazy_static::lazy_static;
 use node_semver::{Range, Version};
 use reqwest::{Client, StatusCode};
@@ -12,6 +13,7 @@ pub enum Error {
     NetworkError,
     InvalidResponse,
     RangeNotSatisfied,
+    InvalidRange,
 }
 
 lazy_static! {
@@ -23,21 +25,21 @@ struct RawMetadata {
     versions: HashMap<Version, Metadata>,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Metadata {
-    name: String,
-    version: String,
-    dependencies: Option<HashMap<String, Range>>,
-    dist: Dist,
+    pub name: String,
+    pub version: String,
+    pub dependencies: Option<HashMap<String, String>>,
+    pub dist: Dist,
 }
 
-#[derive(Deserialize, PartialEq, Debug)]
+#[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Dist {
-    tarball: String,
-    shasum: String,
+    pub tarball: String,
+    pub shasum: String,
 }
 
-pub async fn get_metadata(name: &str, range: Range, registry: &str) -> Result<Metadata, Error> {
+pub async fn get_metadata(name: String, range: Range, registry: &str) -> Result<Metadata, Error> {
     let response = match CLIENT.get(format!("{registry}/{name}")).send().await {
         Ok(response) => response,
         Err(e) => {
@@ -65,6 +67,34 @@ pub async fn get_metadata(name: &str, range: Range, registry: &str) -> Result<Me
     Err(Error::RangeNotSatisfied)
 }
 
+/// **note:** this function does NOT dedup the result
+/// (users should merge together the resulting Vecs and dedup then)
+#[async_recursion]
+pub async fn walk_dependencies(
+    name: &String,
+    range: Range,
+    registry: &str,
+) -> Result<Vec<Metadata>, Error> {
+    let mut result: Vec<Metadata> = Vec::with_capacity(256);
+
+    let metadata = get_metadata(name.to_string(), range, registry).await?;
+    let deps = metadata.dependencies.clone();
+    result.push(metadata);
+
+    if let Some(deps) = deps {
+        for (key, value) in deps {
+            let range = match Range::parse(value) {
+                Ok(r) => r,
+                Err(_) => return Err(Error::InvalidRange),
+            };
+            let mut walked = walk_dependencies(&key, range, registry).await?;
+            result.append(&mut walked);
+        }
+    }
+
+    Ok(result)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -81,7 +111,7 @@ mod tests {
         ($e:expr) => {
             match $e {
                 Ok(r) => r,
-                _ => panic!("error! error!")
+                _ => panic!("error! error!"),
             }
         };
     }
@@ -95,7 +125,7 @@ mod tests {
     #[test]
     fn valid_lodash() {
         let metadata = aw!(get_metadata(
-            "lodash",
+            s!("lodash"),
             Range::parse("1.2.1").unwrap(),
             REGISTRY
         ));

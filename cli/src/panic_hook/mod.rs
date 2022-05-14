@@ -1,4 +1,4 @@
-use owo_colors::colored::*;
+use owo_colors::OwoColorize;
 use std::{
     panic::{self, PanicInfo},
     path::PathBuf,
@@ -69,5 +69,20 @@ pub fn handle_dump(version: &str, panic_info: &PanicInfo) -> Option<PathBuf> {
             eprintln!("{}", report.serialize().unwrap());
             None
         }
+    }
+}
+
+pub fn install() {
+    if cfg!(debug_assertions) {
+        if color_eyre::install().is_err() {
+            eprintln!(
+                "{} failed to install {} panic hook, using release {}",
+                "warn:".yellow().bold(),
+                "color-eyre".italic(),
+                "panic_hook".italic()
+            )
+        }
+    } else {
+        hook();
     }
 }

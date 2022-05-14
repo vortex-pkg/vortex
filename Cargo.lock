@@ -40,6 +40,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-recursion"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cda8f4bcc10624c4e85bc66b3f452cca98cfa5ca002dc83a16aad2367641bea"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "async-stream"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -708,7 +719,7 @@ dependencies = [
 name = "install_npm"
 version = "0.1.0"
 dependencies = [
- "common_macros",
+ "async-recursion",
  "flate2",
  "lazy_static",
  "node-semver",
@@ -1922,6 +1933,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "util"
+version = "0.1.0"
+
+[[package]]
 name = "uuid"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1964,6 +1979,7 @@ dependencies = [
  "exitcode",
  "home",
  "inquire",
+ "install_npm",
  "json",
  "lazy_static",
  "node-semver",
