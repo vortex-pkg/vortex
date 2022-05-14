@@ -4,6 +4,7 @@ members = [
   "validate_package_name",
   "run_in_shell",
   "install_npm",
+  "util"
 ]
 
 [profile.release]
