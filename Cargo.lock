@@ -720,7 +720,6 @@ name = "install_npm"
 version = "0.1.0"
 dependencies = [
  "async-recursion",
- "common_macros",
  "flate2",
  "lazy_static",
  "node-semver",
@@ -1934,6 +1933,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "util"
+version = "0.1.0"
+
+[[package]]
 name = "uuid"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1976,6 +1979,7 @@ dependencies = [
  "exitcode",
  "home",
  "inquire",
+ "install_npm",
  "json",
  "lazy_static",
  "node-semver",
