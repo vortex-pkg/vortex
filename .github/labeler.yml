@@ -13,7 +13,7 @@ validate_package_name:
 display-error:
 - display_error/*
 docs:
-- *.md
+- any: ["README.md", "docs/*"]
 bors-config:
 - bors.toml
 gitignore:
