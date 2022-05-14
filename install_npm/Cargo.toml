@@ -19,7 +19,6 @@ tempdir = "0.3.7"
 tokio-test = "0.4.2"
 
 [dev-dependencies]
-common_macros = "0.1.1"
 tokio-test = "0.4"
 
 [features]

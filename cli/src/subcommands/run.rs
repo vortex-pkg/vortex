@@ -1,15 +1,13 @@
-#[path = "../run_script.rs"]
-mod run_script;
-
 use clap::ArgMatches;
 use owo_colors::colored::*;
+use crate::run_script::*;
 
 pub fn run(arg_matches: &ArgMatches) {
     let name = arg_matches.value_of("script");
-    let scripts = match run_script::get_scripts() {
+    let scripts = match get_scripts() {
         Some(scripts) => scripts,
         None => {
-            run_script::invalid_data("scripts object does not exist in package.json");
+            invalid_data("scripts object does not exist in package.json");
             unreachable!()
         }
     };
@@ -25,5 +23,5 @@ pub fn run(arg_matches: &ArgMatches) {
         }
     };
 
-    run_script::run_script(name, scripts, arg_matches.value_of("shell").unwrap());
+    run_script(name, scripts, arg_matches.value_of("shell").unwrap());
 }

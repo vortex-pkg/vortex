@@ -27,16 +27,16 @@ struct RawMetadata {
 
 #[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Metadata {
-    name: String,
-    version: String,
-    dependencies: Option<HashMap<String, String>>,
-    dist: Dist,
+    pub name: String,
+    pub version: String,
+    pub dependencies: Option<HashMap<String, String>>,
+    pub dist: Dist,
 }
 
 #[derive(Deserialize, PartialEq, Debug, Clone)]
 pub struct Dist {
-    tarball: String,
-    shasum: String,
+    pub tarball: String,
+    pub shasum: String,
 }
 
 pub async fn get_metadata(name: String, range: Range, registry: &str) -> Result<Metadata, Error> {
@@ -98,7 +98,6 @@ pub async fn walk_dependencies(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use common_macros::hash_map;
 
     const REGISTRY: &str = "https://registry.npmjs.org";
 
@@ -144,58 +143,5 @@ mod tests {
                 }
             }
         );
-    }
-
-    #[test]
-    fn valid_inflight() {
-        let walked = aw!(walk_dependencies(
-            &s!("inflight"),
-            Range::parse("1.0.6").unwrap(),
-            REGISTRY
-        ));
-        assert_eq!(
-            panic_on_err!(walked),
-            vec![
-                Metadata {
-                    name: s!("inflight"),
-                    version: s!("1.0.6"),
-                    dependencies: Some(hash_map! {
-                        s!("wrappy") => s!("1"),
-                        s!("once") => s!("^1.3.0")
-                    }),
-                    dist: Dist {
-                        tarball: s!("https://registry.npmjs.org/inflight/-/inflight-1.0.6.tgz"),
-                        shasum: s!("49bd6331d7d02d0c09bc910a1075ba8165b56df9")
-                    }
-                },
-                Metadata {
-                    name: s!("wrappy"),
-                    version: s!("1.0.2"),
-                    dependencies: Some(HashMap::new()),
-                    dist: Dist {
-                        tarball: s!("https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz"),
-                        shasum: s!("b5243d8f3ec1aa35f1364605bc0d1036e30ab69f")
-                    }
-                },
-                Metadata {
-                    name: s!("once"),
-                    version: s!("1.3.3"),
-                    dependencies: Some(hash_map! {s!("wrappy") => s!("1")}),
-                    dist: Dist {
-                        tarball: s!("https://registry.npmjs.org/once/-/once-1.3.3.tgz"),
-                        shasum: s!("b2e261557ce4c314ec8304f3fa82663e4297ca20")
-                    }
-                },
-                Metadata {
-                    name: s!("wrappy"),
-                    version: s!("1.0.1"),
-                    dependencies: Some(HashMap::new()),
-                    dist: Dist {
-                        tarball: s!("https://registry.npmjs.org/wrappy/-/wrappy-1.0.1.tgz"),
-                        shasum: s!("1e65969965ccbc2db4548c6b84a6f2c5aedd4739")
-                    }
-                }
-            ]
-        )
     }
 }
