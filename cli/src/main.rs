@@ -1,5 +1,3 @@
-use owo_colors::colored::*;
-
 mod panic_hook;
 pub mod run_script;
 
